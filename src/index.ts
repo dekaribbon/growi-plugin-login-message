@@ -42,9 +42,9 @@ function escapeHtml(text: string): string {
   return div.innerHTML;
 }
 
-function renderMarkdown(content: string): string {
+async function renderMarkdown(content: string): Promise<string> {
   try {
-    const rawHtml = marked.parse(content, { async: false }) as string;
+    const rawHtml = await marked.parse(content);
     return DOMPurify.sanitize(rawHtml, {
       ALLOWED_TAGS: [
         'p', 'br', 'strong', 'em', 'b', 'i', 'a',
@@ -63,14 +63,14 @@ function renderMarkdown(content: string): string {
   }
 }
 
-function createMessageElement(content: string): HTMLElement {
+async function createMessageElement(content: string): Promise<HTMLElement> {
   const wrapper = document.createElement('div');
   wrapper.id = 'growi-plugin-login-message';
 
   const inner = document.createElement('div');
   inner.className = 'growi-login-message-content';
 
-  const html = renderMarkdown(content);
+  const html = await renderMarkdown(content);
   inner.innerHTML = html;
 
   wrapper.appendChild(inner);
@@ -173,8 +173,8 @@ function injectMessage(): void {
   removeMessage();
   injectStyles();
   fetchMessageContent()
-    .then((content) => {
-      const el = createMessageElement(content);
+    .then(async (content) => {
+      const el = await createMessageElement(content);
       messageElement = el;
       const loginForm =
         document.querySelector('.nologin-header') ||
