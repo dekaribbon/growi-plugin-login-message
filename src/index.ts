@@ -36,19 +36,31 @@ async function fetchMessageContent(): Promise<string> {
   }
 }
 
+function escapeHtml(text: string): string {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function renderMarkdown(content: string): string {
-  const rawHtml = marked.parse(content, { async: false }) as string;
-  return DOMPurify.sanitize(rawHtml, {
-    ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'b', 'i', 'a',
-      'ul', 'ol', 'li', 'code', 'pre',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-      'div', 'span', 'del', 'ins', 'sub', 'sup',
-    ],
-    ALLOWED_ATTR: ['href', 'title', 'target', 'rel'],
-    ALLOW_DATA_ATTR: false,
-  });
+  try {
+    const rawHtml = marked.parse(content, { async: false }) as string;
+    return DOMPurify.sanitize(rawHtml, {
+      ALLOWED_TAGS: [
+        'p', 'br', 'strong', 'em', 'b', 'i', 'a',
+        'ul', 'ol', 'li', 'code', 'pre',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'div', 'span', 'del', 'ins', 'sub', 'sup',
+      ],
+      ALLOWED_ATTR: ['href', 'title', 'target', 'rel'],
+      ALLOW_DATA_ATTR: false,
+    });
+  }
+  catch {
+    const lines = content.split('\n');
+    return lines.map((line) => `<p>${escapeHtml(line)}</p>`).join('');
+  }
 }
 
 function createMessageElement(content: string): HTMLElement {
@@ -91,8 +103,8 @@ function injectStyles(): void {
       margin: 4px 0;
     }
     #growi-plugin-login-message .growi-login-message-content a {
-      color: #1a73e8;
-      text-decoration: underline;
+      color: #1a73e8 !important;
+      text-decoration: underline !important;
     }
     #growi-plugin-login-message .growi-login-message-content ul,
     #growi-plugin-login-message .growi-login-message-content ol {
