@@ -94,6 +94,8 @@ function injectMessage(): void {
       const el = createMessageElement(content);
       messageElement = el;
       const loginForm =
+        document.querySelector('.nologin-header') ||
+        document.querySelector('.noLogin-form-errors') ||
         document.querySelector('.login-form') ||
         document.querySelector('form[action*="login"]') ||
         document.querySelector('.nologin') ||
