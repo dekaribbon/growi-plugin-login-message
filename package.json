@@ -1,0 +1,20 @@
+{
+  "name": "growi-plugin-login-message",
+  "version": "1.0.0",
+  "description": "Display a configurable message on the GROWI login page. The message content is read from a GROWI wiki page.",
+  "type": "module",
+  "keywords": ["growi", "growi-plugin", "login"],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "@growi/pluginkit": "^1.1.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.4.0"
+  },
+  "growiPlugin": {
+    "schemaVersion": "4",
+    "types": ["script"]
+  }
+}
